@@ -1,27 +1,29 @@
+# utils/web_scraper.py
 
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
 
-def get_company_financial_urls(company_name):
-    slug_map = {
-        "infosys": "IT", "tcs": "TCS", "titan": "TI01"
-    }
-    slug = slug_map.get(company_name.lower(), "IT")
-    base = f"https://www.moneycontrol.com/financials/{company_name.lower()}/"
-    return {
-        "balance_sheet": base + f"balance-sheetVI/{slug}",
-        "profit_loss": base + f"profit-lossVI/{slug}"
-    }
-
-def scrape_financial_tables(urls: dict):
-    results = []
+def fetch_moneycontrol_financials(company_name_or_url):
     try:
-        for key, url in urls.items():
-            res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
-            soup = BeautifulSoup(res.text, "html.parser")
-            tables = pd.read_html(str(soup))
-            results.extend(tables)
+        if company_name_or_url.startswith("http"):
+            url = company_name_or_url
+        else:
+            slug = company_name_or_url.lower().replace(" ", "")
+            url = f"https://www.moneycontrol.com/financials/{slug}/balance-sheetVI/{slug}"
+
+        headers = {
+            "User-Agent": "Mozilla/5.0"
+        }
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.content, "html.parser")
+        tables = pd.read_html(str(soup))
+
+        if not tables:
+            return "No readable tables found."
+
+        return tables
     except Exception as e:
-        results.append(f"Scrape error: {str(e)}")
-    return results
+        return f"Web scrape error: {str(e)}"
