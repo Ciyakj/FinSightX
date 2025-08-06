@@ -4,15 +4,15 @@ import streamlit as st
 def call_llm(prompt, model="groq", mode="concise"):
     try:
         if model == "groq":
-            url = "https://api.groq.com/openai/v1/chat/completions"
+            url = "https://api.groq.com/v1/chat/completions"  # ✅ correct endpoint
             headers = {
                 "Authorization": f"Bearer {st.secrets['GROQ_API_KEY']}",
                 "Content-Type": "application/json"
             }
             body = {
-                "model": "llama2-70b-4096",  # safer fallback model
+                "model": "mixtral-8x7b-32768",  # or any other supported model
                 "messages": [
-                    {"role": "system", "content": f"You are a financial analysis assistant. Give {mode} answers."},
+                    {"role": "system", "content": f"You are a financial assistant. Answer in a {mode} manner."},
                     {"role": "user", "content": prompt}
                 ],
                 "temperature": 0.7
