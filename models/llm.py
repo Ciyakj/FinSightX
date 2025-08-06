@@ -1,27 +1,20 @@
-import requests
-import streamlit as st
+from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage, SystemMessage
 
-def call_llm(prompt, model="groq", mode="concise"):
+def call_llm(prompt, mode="concise"):
     try:
-        if model == "groq":
-            url = "https://api.groq.com/v1/chat/completions"  # ✅ correct endpoint
-            headers = {
-                "Authorization": f"Bearer {st.secrets['GROQ_API_KEY']}",
-                "Content-Type": "application/json"
-            }
-            body = {
-                "model": "mixtral-8x7b-32768",  # or any other supported model
-                "messages": [
-                    {"role": "system", "content": f"You are a financial assistant. Answer in a {mode} manner."},
-                    {"role": "user", "content": prompt}
-                ],
-                "temperature": 0.7
-            }
+        chat = ChatGroq(
+            api_key=st.secrets["GROQ_API_KEY"],
+            model="mixtral-8x7b-32768"
+        )
 
-            response = requests.post(url, headers=headers, json=body)
-            response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
-        else:
-            return "Model not configured."
+        messages = [
+            SystemMessage(content=f"You are a financial assistant. Be {mode}."),
+            HumanMessage(content=prompt)
+        ]
+
+        response = chat.invoke(messages)
+        return response.content
+
     except Exception as e:
         return f"LLM Error: {str(e)}"
