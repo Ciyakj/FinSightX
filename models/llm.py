@@ -1,4 +1,8 @@
-from config.config import GROQ_API_KEY, GEMINI_API_KEY, DEEPSEEK_API_KEY
+import streamlit as st
+
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "")
+DEEPSEEK_API_KEY = st.secrets.get("DEEPSEEK_API_KEY", "")
 import requests
 
 def call_llm(prompt, model="groq", mode="concise"):
