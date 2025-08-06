@@ -47,7 +47,7 @@ if question:
                 st.warning(f"❌ Scraping error: {dfs}")
 
         # Retrieve relevant context using RAG
-        rag = CodeRAGRetriever()
+        rag = FinancialRAG()
         rag.add_chunks(context_chunks)
         retrieved_context = "\n\n".join(rag.query(question))
 
