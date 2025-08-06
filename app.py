@@ -3,7 +3,7 @@ import pandas as pd
 from models.llm import call_llm
 from utils.web_scraper import fetch_moneycontrol_financials
 from utils.file_reader import read_financial_files
-from utils.rag_retriever import CodeRAGRetriever
+from utils.rag_retriever import FinancialRAG
 
 st.set_page_config(page_title="FinSightX", layout="wide")
 st.title("📊 FinSightX – Analyze Company Financials Intelligently")
