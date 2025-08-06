@@ -10,16 +10,10 @@ def call_llm(prompt, model="groq", mode="concise"):
                 "Content-Type": "application/json"
             }
             body = {
-                "model": "mixtral-8x7b-32768",
+                "model": "llama2-70b-4096",  # safer fallback model
                 "messages": [
-                    {
-                        "role": "system",
-                        "content": f"You are a financial analysis assistant. Give {mode} answers."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
+                    {"role": "system", "content": f"You are a financial analysis assistant. Give {mode} answers."},
+                    {"role": "user", "content": prompt}
                 ],
                 "temperature": 0.7
             }
@@ -27,9 +21,7 @@ def call_llm(prompt, model="groq", mode="concise"):
             response = requests.post(url, headers=headers, json=body)
             response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
-
         else:
             return "Model not configured."
-
     except Exception as e:
         return f"LLM Error: {str(e)}"
