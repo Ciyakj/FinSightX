@@ -5,4 +5,5 @@ requests
 beautifulsoup4
 scikit-learn
 PyMuPDF
+langchain
 langchain_groq
